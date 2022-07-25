@@ -70,3 +70,10 @@ const getUserProfile = asyncHander(async (req, res) => {
     throw new Error("User not found");
   }
 });
+
+// GEt ALl Users
+
+const getUsers = asyncHander(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
