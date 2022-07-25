@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import Product from "../models/productModel";
 
 // Geting all Products
-const getProduct = asyncHandler(async (req, res) => {
+const getAllProduct = asyncHandler(async (req, res) => {
   // Page Sige
   const pageSize = 12;
   const page = Number(req.query.pageNumber) || 1;
@@ -148,8 +148,8 @@ const getTopProducts = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
-exports = {
-  getProduct,
+module.exports = {
+  getAllProduct,
   getProductById,
   deleteProduct,
   createProduct,
