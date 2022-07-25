@@ -3,9 +3,11 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import path from "path";
 import colors from "colors";
-
+import connectDB from "./config/db.js";
+import productsRoute from "./routes/productRouts.js";
 dotenv.config();
 // Middleware
+connectDB();
 
 const app = express();
 
@@ -18,6 +20,10 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Api is Running.......");
 });
+
+// All Routes
+
+app.use("/api/products", productsRoute);
 
 const PORT = process.env.PORT || 500;
 

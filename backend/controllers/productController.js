@@ -1,16 +1,19 @@
 import asyncHandler from "express-async-handler";
-import Product from "../models/productModel";
+import Product from "../models/productModel.js";
 
-// Geting all Products
-const getAllProduct = asyncHandler(async (req, res) => {
-  // Page Sige
-  const pageSize = 12;
+// @desc    : Fetch all products
+// @route   : Get request to /api/products
+// @access  : Public route
+
+const getProducts = asyncHandler(async (req, res) => {
+  const pageSize = 12; // test sise ( 10 > for Production)
   const page = Number(req.query.pageNumber) || 1;
+
   const keyword = req.query.keyword
     ? {
         name: {
           $regex: req.query.keyword,
-          $option: "i",
+          $options: "i",
         },
       }
     : {};
@@ -19,16 +22,19 @@ const getAllProduct = asyncHandler(async (req, res) => {
   const products = await Product.find({ ...keyword })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
-  // Throw New Error
+  // throw new Error('New Error')
+
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
-// Get all products by id
+// @desc    : Fetch single product
+// @route   : Get request to /api/product/:id
+// @access  : Public route
 
 const getProductById = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
-  if (!product) {
+  if (product) {
     res.json(product);
   } else {
     res.status(404);
@@ -36,22 +42,25 @@ const getProductById = asyncHandler(async (req, res) => {
   }
 });
 
-// Delete Product
+// @desc    : Delete single product
+// @route   : DDELETE request to /api/product/:id
+// @access  : Private/Admin
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
+
   if (product) {
     await product.remove();
-    res.json({
-      message: "Product Removed Successfully",
-    });
+    res.json({ message: " Product was removed" });
   } else {
     res.status(404);
-    throw new Error("Product Not found");
+    throw new Error("Product not found");
   }
 });
 
-//
+// @desc    : Create single product
+// @route   : POST request to /api/products
+// @access  : Private/Admin
 
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
@@ -66,18 +75,13 @@ const createProduct = asyncHandler(async (req, res) => {
     numReviews: 0,
     description: "Sample Text",
   });
-
   const createdProduct = await product.save();
-
-  res.status(201).json({
-    success: true,
-    message: "Product Created Successfuly",
-    createdProduct,
-  });
+  res.status(201).json(createdProduct);
 });
 
-// Update Product
-
+// @desc    Update a product
+// @route   PUT /api/products/:id
+// @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
   const { name, price, description, image, brand, category, countInStock } =
     req.body;
@@ -101,7 +105,9 @@ const updateProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// Create Product Reviews
+// @desc    Create new review
+// @route   POST /api/products/:id/reviews
+// @access  Private
 const createProductReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body;
 
@@ -140,16 +146,12 @@ const createProductReview = asyncHandler(async (req, res) => {
   }
 });
 
-// Geting top Rated Product
-
 const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ rating: -1 }).limit(6); // Change for development
-
   res.json(products);
 });
 
-module.exports = {
-  getAllProduct,
+export {
+  getProducts,
   getProductById,
   deleteProduct,
   createProduct,

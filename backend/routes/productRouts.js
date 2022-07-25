@@ -1,15 +1,16 @@
 import express from "express";
 const router = express.Router();
 import {
-  getAllProduct,
+  getProducts,
+  getProductById,
+  deleteProduct,
   createProduct,
   updateProduct,
-  getProductById,
-} from "../controllers/productController";
-
-router.route("/").get(getAllProduct).post(createProduct);
+  createProductReview,
+  getTopProducts,
+} from "../controllers/productController.js";
+router.route("/").get(getProducts).post(createProduct);
 router.get("/top", getTopProducts);
-
 router.route("/:id/reviews").post(createProductReview);
 
 router
@@ -18,4 +19,6 @@ router
   .put(updateProduct)
   .delete(deleteProduct);
 
-module.exports = router;
+
+
+  export default router
