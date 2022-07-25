@@ -47,20 +47,12 @@ const deleteProduct = asyncHandler(async (req, res) => {
 });
 
 const createProduct = asyncHandler(async (req, res) => {
-  const product = new Product({
-    name: "Sample Name",
-    price: 0,
-    user: req.user._id,
-    image: "/img/sample.jpg",
-    brand: "Sample Brand",
-    category: "Sample Category",
-    countInStock: 0,
-    rating: 0.0,
-    numReviews: 0,
-    description: "Sample Text",
+  const product = await Product.create(req.body);
+
+  res.status(201).json({
+    success: true,
+    product,
   });
-  const createdProduct = await product.save();
-  res.status(201).json(createdProduct);
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
@@ -85,7 +77,6 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error("Product not found");
   }
 });
-
 
 const createProductReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body;
