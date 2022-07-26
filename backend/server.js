@@ -5,6 +5,7 @@ import path from "path";
 import colors from "colors";
 import connectDB from "./config/db.js";
 import productsRoute from "./routes/productRouts.js";
+import userRoutes from './routes/userRouts.js'
 dotenv.config();
 // Middleware
 connectDB();
@@ -24,7 +25,7 @@ app.get("/", (req, res) => {
 // All Routes
 
 app.use("/api/products", productsRoute);
-
+app.use("/api/users",userRoutes)
 const PORT = process.env.PORT || 500;
 
 app.listen(
